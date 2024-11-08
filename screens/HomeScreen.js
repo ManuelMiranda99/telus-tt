@@ -1,17 +1,42 @@
-import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import React from "react";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import Button from "../components/Button";
+import { removeTodo } from "../store/todos";
 
 export default function HomeScreen({ navigation }) {
+  const dispatch = useDispatch();
+  const todos = useSelector((state) => state.todos);
+
+  const navigateToAddTodo = () => {
+    navigation.navigate("AddTask");
+  };
+
+  const deleteTodo = (id) => {
+    dispatch(removeTodo(id));
+  };
+
   return (
     <View style={styles.container}>
-      {/* Here add your Code for Task List and button to navigate to add new tasks, also remember todo's should be able to be deleted. */}
+      <Button text="Add Todo" onPress={navigateToAddTodo} />
+
+      <FlatList
+        data={todos}
+        renderItem={({ item }) => (
+          <Pressable onPress={() => deleteTodo(item.id)}>
+            <View>
+              <Text>{item.text}</Text>
+            </View>
+          </Pressable>
+        )}
+      />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16
-  }
-})
+    padding: 16,
+  },
+});
